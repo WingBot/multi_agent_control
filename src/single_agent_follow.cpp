@@ -106,7 +106,7 @@ int main(int argc, char **argv)
             y_t = transform_.getOrigin().y();
             t_run = ros::Time::now();
 //             x_d = v_x_d * (t_run - t_start).toSec();
-            x_d = x_start + v_x_d * (t_run - t_start).toSec() < x_g ? v_x_d * (t_run - t_start).toSec():x_g;
+            x_d = (x_start + v_x_d * (t_run - t_start).toSec()) < x_g ? (x_start +v_x_d * (t_run - t_start).toSec()):x_g;
             y_d = y_start;
 //             ROS_INFO_STREAM("x_t : "<< x_t);
 //             ROS_INFO_STREAM("y_t : "<< y_t);
@@ -117,7 +117,7 @@ int main(int argc, char **argv)
 //             
 //             ROS_INFO_STREAM("delta_goal : "<< delta_goal);
             ROS_INFO_STREAM_ONCE("need to followe or not ? ");
-           if(delta_goal > goal_error)
+           if(x_t < x_g && delta_goal > goal_error)
             {
                 ROS_INFO_STREAM("===============following================== ");
                 cmd_vel_pub.publish(move_cmd);
