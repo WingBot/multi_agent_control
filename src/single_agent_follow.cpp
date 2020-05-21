@@ -34,7 +34,7 @@ int main(int argc, char **argv)
     double v_y_d=0.0;//向前的线速度0.2m/s
     double v_x_t=0.0;//向前的线速度0.2m/s
     double v_y_t=0.0;//向前的线速度0.2m/s
-    double v_k = 1.0;
+    double v_k = 2.0;
     double goal_distance=1.0;//行进记录1.0m
     double angular_speed=0.1;//角度素1.0rad/s
     double goal_angle=M_PI;
@@ -57,6 +57,9 @@ int main(int argc, char **argv)
             tf_error = true;
         }
     
+//     double x_start = 0.0;
+//     double y_start = 0.0;
+    
     double x_start = transform.getOrigin().x();
     double y_start = transform.getOrigin().y();
     double x_t = transform.getOrigin().x();
@@ -65,6 +68,8 @@ int main(int argc, char **argv)
     double y_g = y_start;
     double x_d = x_start;
     double y_d = y_start;
+
+
     ros::Time t_start = ros::Time::now();
     double goal_error = 0.01;//=========================到达目标精度0.01m
     
@@ -122,8 +127,10 @@ int main(int argc, char **argv)
                 v_x_t = v_x_d;
                 double delta_y = 0.0;
 //                 var = (y < 10) ? 30 : 40;
-                delta_y = abs(y_d - y_t)<0.001 ? 0.0 : (y_d - y_t); //0的范围限定
+                delta_y = abs(y_d - y_t)<0.00000000001 ? 0.0 : (y_d - y_t); //0的范围限定
+                
                 v_y_t = v_y_d + v_k * delta_y;
+                
                 move_cmd.linear.x = v_x_t;
                 move_cmd.linear.y = v_y_t;
                 //cout<<"distance: "<<distance<<endl;
