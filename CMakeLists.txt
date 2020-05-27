@@ -136,9 +136,11 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
- add_executable(single_agent_follow_node src/single_agent_follow.cpp )
-
- target_link_libraries(single_agent_follow_node ${catkin_LIBRARIES})
+add_executable(single_agent_follow_node src/single_agent_follow.cpp)
+target_link_libraries(single_agent_follow_node ${catkin_LIBRARIES})
+ 
+add_executable(single_agent_static_obstacle_node src/single_agent_static_obstacle.cpp)
+target_link_libraries(single_agent_static_obstacle_node ${catkin_LIBRARIES})
 # )
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

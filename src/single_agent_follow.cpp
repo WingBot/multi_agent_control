@@ -83,8 +83,8 @@ int main(int argc, char **argv)
     ros::Time t_run;
 //     cout<<"angle_start: "<<angle_start<<endl;
     ROS_INFO_STREAM_ONCE("x_start = "<< transform.getOrigin().x());
-    ROS_INFO_STREAM_ONCE("y_start = "<< transform.getOrigin().x());
-    ROS_INFO_STREAM_ONCE("angle_start = "<< transform.getOrigin().x());
+    ROS_INFO_STREAM_ONCE("y_start = "<< transform.getOrigin().y());
+    ROS_INFO_STREAM_ONCE("angle_start = "<< acos(transform.getRotation().z())*2);
     while(ros::ok())//等待键盘ctrl+C操作则停止
     {
         tf::StampedTransform transform_;
@@ -141,7 +141,7 @@ int main(int argc, char **argv)
 //                 ROS_INFO_STREAM("y_t = "<< y_t);
                 ROS_INFO_STREAM("x_d = "<< x_d << "\ty_d = "<< y_d);
                 ROS_INFO_STREAM("x_t = "<< x_t << "\ty_t = "<< y_t);
-//                 ROS_INFO_STREAM("y_d = "<< y_d);
+//              ROS_INFO_STREAM("y_d = "<< y_d);
                 ROS_INFO_STREAM("move_cmd.linear.x = "<< move_cmd.linear.x);
                 ROS_INFO_STREAM("move_cmd.linear.y = "<< move_cmd.linear.y);
                 ROS_INFO_STREAM("delta_y = "<< delta_y);
