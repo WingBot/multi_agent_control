@@ -144,6 +144,9 @@ target_link_libraries(single_agent_static_obstacle_node ${catkin_LIBRARIES})
 
 add_executable(single_agent_follow_a_circle_node src/single_agent_follow_a_circle.cpp)
 target_link_libraries(single_agent_follow_a_circle_node ${catkin_LIBRARIES})
+
+add_executable(single_agent_follow_line_static_ob_node src/single_agent_follow_line_static_ob.cpp)
+target_link_libraries(single_agent_follow_line_static_ob_node ${catkin_LIBRARIES})
 # )
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

@@ -33,7 +33,8 @@ int main(int argc, char **argv)
     double circle_r = 0.5;
     double omega = 0.5;
     double v_x_d=0.0;//向前的线速度0.2m/s
-    double v_y_d=omega*circle_r;//向前的线速度0.2m/s
+//     double v_y_d=omega*circle_r;//向前的线速度0.2m/s
+    double v_y_d = 0.0;
     double v_x_max=1.0;//向前的线速度0.2m/s
     double v_y_max=1.0;//向前的线速度0.2m/s
     double v_x_t=0.0;//向前的线速度0.2m/s
@@ -146,9 +147,11 @@ int main(int argc, char **argv)
            if(x_t < x_g && delta_goal > goal_error)
             {
                 x_d = (x_start - circle_r + circle_r * cos(omega*(t_run - t_start).toSec()));
-                y_d = (y_start + circle_r * sin(omega*(t_run - t_start).toSec()));
+//                 y_d = (y_start + circle_r * sin(omega*(t_run - t_start).toSec()));
+                y_d = y_start;
                 v_x_d = (-1) * omega * circle_r * sin(omega*(t_run - t_start).toSec());
-                v_y_d = omega * circle_r * cos(omega*(t_run - t_start).toSec());
+//                 v_y_d = omega * circle_r * cos(omega*(t_run - t_start).toSec());
+                v_y_d = v_y_d;
                 ROS_INFO_STREAM("x_d = "<< x_d << "\ty_d = "<< y_d);
                 ROS_INFO_STREAM("x_t = "<< x_t << "\ty_t = "<< y_t);
                 cmd_vel_pub.publish(move_cmd);
