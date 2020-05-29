@@ -220,9 +220,9 @@ int main(int argc, char **argv)
                 ROS_INFO_STREAM("move_cmd.linear.x = "<< move_cmd.linear.x<< "\tmove_cmd.linear.y = "<< move_cmd.linear.y);
 //                 ROS_INFO_STREAM();
 //                 lambda_x = lambda_x;
-                lambda_x = lambda_x + lambda_rate_x * (t_last -t_run).toSec();
+//                 lambda_x = lambda_x + lambda_rate_x * (t_last -t_run).toSec();
 //                 lambda_y = lambda_y + lambda_rate_y * (t_last -t_run).toSec();
-                ROS_INFO_STREAM("lambda_x = "<< lambda_x);
+                ROS_INFO_STREAM("lambda_xs = "<< lambda_x);
 //                 ROS_INFO_STREAM();
                 t_last = t_run;
                 
