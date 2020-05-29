@@ -41,7 +41,7 @@ int main(int argc, char **argv)
     double v_y_t=0.0;//向前的线速度0.2m/s
     double v_x_k = 2.0;
     double v_y_k = 2.0;
-    double obstacle_x_set = 1.0;
+    double obstacle_x_set = -0.5;
     double obstacle_y_set = 0.1;
     
 
@@ -101,7 +101,7 @@ int main(int argc, char **argv)
 
     
     double epsilon = 0.1;//set to 0.1
-    double epsilon_k = 2.0;
+    double epsilon_k = 5.0;
     double lambda_x = 0.0;
 //     double lambda_y = 0.0;
     double Bright_k = -50.0;
@@ -228,7 +228,7 @@ int main(int argc, char **argv)
                 ROS_INFO_STREAM("move_cmd.linear.x = "<< move_cmd.linear.x<< "\tmove_cmd.linear.y = "<< move_cmd.linear.y);
 //                 ROS_INFO_STREAM();
 //                 lambda_x = lambda_x;
-//                 lambda_x = lambda_x + lambda_rate_x * (t_last -t_run).toSec();
+                lambda_x = lambda_x - lambda_rate_x * (t_last -t_run).toSec();
 //                 lambda_y = lambda_y + lambda_rate_y * (t_last -t_run).toSec();
                 ROS_INFO_STREAM("lambda_xs = "<< lambda_x);
 //                 ROS_INFO_STREAM();
