@@ -30,7 +30,7 @@ int main(int argc, char **argv)
     ros::Rate loop_rate(rate);//更新频率20Hz，它会追踪记录自上一次调用Rate::sleep()后时间的流逝，并休眠直到一个频率周期的时间
  
     //初始化操作
-    double circle_r = 0.5;
+    double circle_r = 1.0;
     double omega = 0.5;
     double v_x_d=0.0;//向前的线速度0.2m/s
 //     double v_y_d=omega*circle_r;//向前的线速度0.2m/s

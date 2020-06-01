@@ -5,6 +5,8 @@
 #include "math.h"
 #include <sstream>
 #include <iostream>
+#include <geometry_msgs/PoseStamped.h>
+#include <nav_msgs/Odometry.h>
 
 // #include <rbx1_nav/CalibrateAngularConfig.h>
 // #include <rbx1_nav/CalibrateLinearConfig.h>
@@ -15,7 +17,32 @@
 //  y              |
 // <---------------
 using namespace std;
+nav_msgs::Odometry Odom_resv_;
+double v_x_t=0.0;//向前的线速度0.2m/s
+double v_y_t=0.0;//向前的线速度0.2m/s
+boost::mutex odom_mutex_;
 
+void OdomCallback(const nav_msgs::Odometry::ConstPtr& Odom_msg)
+{
+//     Odom_resv_ = *Odom_msg;
+//     v_x_t = Odom_resv_.twist.twist.linear.x;
+//     v_y_t = Odom_resv_.twist.twist.linear.y;
+//     ROS_INFO_STREAM("OdomCallback_________v_x_t = "<< v_x_t);
+//     ROS_INFO_STREAM("OdomCallback_________v_y_t = "<< v_y_t);
+    ROS_INFO_STREAM("OdomCallback_________ = ");
+//         try
+//     {
+//         odom_mutex_.lock();
+// //         last_twist_time_ = ros::Time::now();
+//         Odom_resv_ = *Odom_msg.get();
+//         ROS_INFO_STREAM("OdomCallback_________ = "<< Odom_resv_.twist.twist.linear.x);
+//         odom_mutex_.unlock();
+//     }
+//     catch(...)
+//     {
+//         odom_mutex_.unlock();
+//     }
+}
 int main(int argc, char **argv)
 {
     ros::init(argc,argv,"static_obstacle_avoidance");//指定节点“out_and_back”
@@ -23,19 +50,24 @@ int main(int argc, char **argv)
     ros::NodeHandle n;//创造一个节点句柄
     
     ros::Publisher cmd_vel_pub=n.advertise<geometry_msgs::Twist>("/cmd_vel",1000);//将在/cmd_vel话题上发布一个geometry_msgs::Twist消息
+    ros::Publisher delta_dis_pub=n.advertise<geometry_msgs::PoseStamped>("/delta_dis",1000);
+    
+    ros::Subscriber odom_sub = n.subscribe<nav_msgs::Odometry> ("/odom", 5, OdomCallback);
     int parameter;
     bool ifget1 = ros::param::get("param1", parameter);
     int rate=20;//定义更新频率
     bool tf_error = false;
     ros::Rate loop_rate(rate);//更新频率20Hz，它会追踪记录自上一次调用Rate::sleep()后时间的流逝，并休眠直到一个频率周期的时间
  
+    
+    
+    
     //初始化操作
     double v_x_d=0.2;//向前的线速度0.2m/s
     double v_y_d=0.0;//向前的线速度0.2m/s
-    double v_x_max=0.4;//向前的线速度0.2m/s
-    double v_y_max=0.4;//向前的线速度0.2m/s
-    double v_x_t=0.0;//向前的线速度0.2m/s
-    double v_y_t=0.0;//向前的线速度0.2m/s
+    double v_x_max=0.6;//向前的线速度0.2m/s
+    double v_y_max=0.6;//向前的线速度0.2m/s
+
     double v_x_k = 2.0;
     double v_y_k = 2.0;
     double obstacle_x_set = 1.0;
@@ -44,6 +76,8 @@ int main(int argc, char **argv)
 
     double safe_distance = 0.2;//初始化障碍物位置与安全距离
     double delta_obstacle = 0.0;
+    double delta_dis_x = 0.0;
+    double delta_dis_y = 0.0;
     double goal_distance=2.0;//行进记录1.0m
     double angular_speed=0.1;//角度素1.0rad/s
     double goal_angle=M_PI;
@@ -51,9 +85,10 @@ int main(int argc, char **argv)
     tf::TransformListener listener;
    
     geometry_msgs::Twist move_cmd;//定义消息对象
+    geometry_msgs::PoseStamped delta_dis;//
     move_cmd.linear.x=move_cmd.linear.y=move_cmd.linear.z=0;
     move_cmd.angular.x=move_cmd.angular.y=move_cmd.angular.z=0;
- 
+    delta_dis.pose.position.x = delta_dis.pose.position.y = delta_dis.pose.position.z = 0.0;
     tf::StampedTransform transform;
     try{
             listener.waitForTransform("/odom", "base_footprint", ros::Time(0), ros::Duration(1.0));
@@ -103,6 +138,9 @@ int main(int argc, char **argv)
     double Bright_k = -50.0;
     double B_k = -2 ;
     
+    double delta_x = 0.0;
+    double delta_y = 0.0;
+    
     ros::Time t_run;
     ros::Time t_last;
     
@@ -147,27 +185,33 @@ int main(int argc, char **argv)
                 ROS_INFO_STREAM("x_d = "<< x_d << "\ty_d = "<< y_d);
                 ROS_INFO_STREAM("x_t = "<< x_t << "\ty_t = "<< y_t);
                 cmd_vel_pub.publish(move_cmd);
+                delta_dis_pub.publish(delta_dis);
                 loop_rate.sleep();
 //                 distance = sqrt(pow((transform_.getOrigin().x() - x_start),2)+pow((transform_.getOrigin().y() - y_start),2));
                 //计算与目标位置的距离
                 delta_goal = sqrt(pow((x_g - x_t),2) + pow((y_g - y_t),2));
                 ROS_INFO_STREAM("delta_goal = "<< delta_goal);
-                //计算与障碍物的距离
+                //计算与障碍物的距离,topic
                 delta_obstacle =  sqrt(pow((obstacle_x - x_t),2) + pow((obstacle_y - y_t),2));
                 ROS_INFO_STREAM("delta_obstacle = "<< delta_obstacle);
                 //计算过程函数F1、F2
                 
-                double delta_x = 0.0;
-                double delta_y = 0.0;
+
                 
                 //忽略太小的偏差
 //                 delta_x = abs(x_d - x_t) < 0.0000000000000000000001 ? 0.0 : (x_d - x_t); 
 //                 delta_y = abs(y_d - y_t) < 0.0000000000000000000001 ? 0.0 : (y_d - y_t); //0的范围限定
+                delta_dis_x = obstacle_x - x_t;
+                delta_dis_y = obstacle_y - y_t;
                 
                 delta_x = x_d - x_t; 
                 delta_y = y_d - y_t; //0的范围限定
+                //topic
                 ROS_INFO_STREAM("delta_x = "<< delta_x << "\tdelta_y = "<< delta_y);
-
+//                 v_x_t = Odom_resv_.twist.twist.linear.x;
+//                 v_y_t = Odom_resv_.twist.twist.linear.y;
+                v_x_t = v_x_d;
+                v_y_t = v_y_d;
 //                 v_x_t = abs(v_x_d + v_x_k * delta_x) > v_x_max ? v_x_max : (v_x_d + v_x_k * delta_x);
 //                 v_y_t = abs(v_y_d + v_y_k * delta_y) > v_x_max ? v_x_max : (v_y_d + v_y_k * delta_y);
                 
@@ -213,18 +257,42 @@ int main(int argc, char **argv)
                 double cmd_vel_rate_y = (F1_y - v_y_t) / epsilon; 
                 ROS_INFO_STREAM("cmd_vel_rate_x = "<< cmd_vel_rate_x << "\tcmd_vel_rate_y = "<< cmd_vel_rate_y);
                 //速度指令赋值更新与参数更新
-                            
+                
+                
+//                 v_x_t = v_x_t + cmd_vel_rate_x * (t_run - t_last).toSec();
+//                 v_y_t = v_y_t + cmd_vel_rate_y * (t_run - t_last).toSec();
+
                 move_cmd.linear.x = v_x_t + cmd_vel_rate_x * (t_run - t_last).toSec();
                 move_cmd.linear.y = v_y_t + cmd_vel_rate_y * (t_run - t_last).toSec();
+                
+                ROS_INFO_STREAM("v_x_t = "<< v_x_t << "\tmove_cmd.linear.x = "<< move_cmd.linear.x);
+                ROS_INFO_STREAM("v_y_t = "<< v_y_t << "\tmove_cmd.linear.y = "<< move_cmd.linear.y);
+                
+                
+                move_cmd.linear.z = 0.0;
+                move_cmd.angular.x = 0.0;
+                move_cmd.angular.y = 0.0;
+                move_cmd.angular.z = 0.0;
+                
+                
                 ROS_INFO_STREAM("delta_time = "<< (t_run - t_last).toSec());
                 ROS_INFO_STREAM("move_cmd.linear.x = "<< move_cmd.linear.x<< "\tmove_cmd.linear.y = "<< move_cmd.linear.y);
 //                 ROS_INFO_STREAM();
 //                 lambda_x = lambda_x;
-//                 lambda_x = lambda_x + lambda_rate_x * (t_last -t_run).toSec();
+                lambda_x = lambda_x - lambda_rate_x * (t_last -t_run).toSec();
 //                 lambda_y = lambda_y + lambda_rate_y * (t_last -t_run).toSec();
                 ROS_INFO_STREAM("lambda_xs = "<< lambda_x);
 //                 ROS_INFO_STREAM();
                 t_last = t_run;
+                delta_dis.pose.position.x = delta_dis_x;
+                delta_dis.pose.position.y = delta_dis_y;
+                delta_dis.pose.position.z = delta_obstacle;
+                delta_dis.header.frame_id = "base_footprint";
+                delta_dis.header.stamp = ros::Time::now();
+                delta_dis.pose.orientation.w = lambda_x;
+                delta_dis.pose.orientation.x = delta_x;
+                delta_dis.pose.orientation.y = delta_y;
+                delta_dis.pose.orientation.z = 0.0;
                 
 //              ROS_INFO_STREAM("y_d = "<< y_d);
 
@@ -233,9 +301,23 @@ int main(int argc, char **argv)
             }
             else {
                 ROS_INFO_STREAM_ONCE("stop.... ");
+                delta_dis.pose.position.x = delta_dis_x;
+                delta_dis.pose.position.y = delta_dis_y;
+                delta_dis.pose.position.z = delta_obstacle;
+                delta_dis.header.frame_id = "base_footprint";
+                delta_dis.header.stamp = ros::Time::now();
+                delta_dis.pose.orientation.w = lambda_x;
+                delta_dis.pose.orientation.x = delta_x;
+                delta_dis.pose.orientation.y = delta_y;
+                delta_dis.pose.orientation.z = 0.0;
                 move_cmd.linear.x = 0.0;
                 move_cmd.linear.y = 0.0;
+                move_cmd.linear.z = 0.0;
+                move_cmd.angular.x = 0.0;
+                move_cmd.angular.y = 0.0;
+                move_cmd.angular.z = 0.0;
                 cmd_vel_pub.publish(move_cmd);
+                delta_dis_pub.publish(delta_dis);
 //                 if(angle + angular_tolerance < goal_angle ){
 //                     move_cmd.linear.x=0.0;
 //                     move_cmd.angular.z=angular_speed;
