@@ -47,7 +47,7 @@ int main(int argc, char **argv)
  
     tf::StampedTransform transform;
     try{
-            listener.waitForTransform("/odom", "base_footprint", ros::Time(0), ros::Duration(1.0));
+            listener.waitForTransform("/odom", "base_footprint", ros::Time(0), ros::Duration(5.0));
             listener.lookupTransform("/odom", "base_footprint",  ros::Time(0), transform);
         }
     catch (tf::TransformException &ex) 

@@ -91,8 +91,8 @@ int main(int argc, char **argv)
     delta_dis.pose.position.x = delta_dis.pose.position.y = delta_dis.pose.position.z = 0.0;
     tf::StampedTransform transform;
     try{
-            listener.waitForTransform("/odom", "base_footprint", ros::Time(0), ros::Duration(1.0));
-            listener.lookupTransform("/odom", "base_footprint",  ros::Time(0), transform);
+            listener.waitForTransform("odom", "base_footprint", ros::Time::now(), ros::Duration(5.0));
+            listener.lookupTransform("odom", "base_footprint",  ros::Time::now(), transform);
         }
     catch (tf::TransformException &ex) 
         {
@@ -153,8 +153,8 @@ int main(int argc, char **argv)
         tf::StampedTransform transform_;
         try
             {
-                listener.waitForTransform("odom", "base_footprint", ros::Time(0), ros::Duration(1.0));
-                listener.lookupTransform("odom", "base_footprint", ros::Time(0), transform_);
+                listener.waitForTransform("odom", "base_footprint", ros::Time::now(), ros::Duration(5.0));
+                listener.lookupTransform("odom", "base_footprint", ros::Time::now(), transform_);
             }
         catch (tf::TransformException &ex) 
             {
@@ -261,9 +261,27 @@ int main(int argc, char **argv)
                 
 //                 v_x_t = v_x_t + cmd_vel_rate_x * (t_run - t_last).toSec();
 //                 v_y_t = v_y_t + cmd_vel_rate_y * (t_run - t_last).toSec();
-
-                move_cmd.linear.x = v_x_t + cmd_vel_rate_x * (t_run - t_last).toSec();
-                move_cmd.linear.y = v_y_t + cmd_vel_rate_y * (t_run - t_last).toSec();
+                double cmd_vel_temp_x,cmd_vel_temp_y;
+                cmd_vel_temp_x = v_x_t + cmd_vel_rate_x * (t_run - t_last).toSec();
+                cmd_vel_temp_y = v_y_t + cmd_vel_rate_y * (t_run - t_last).toSec();
+                    if (cmd_vel_temp_x > (-1)*v_x_max && cmd_vel_temp_x < v_x_max){
+                            move_cmd.linear.x = cmd_vel_temp_x;
+                    }else if(cmd_vel_temp_x < (-1)*v_x_max){
+                        move_cmd.linear.x = (-1)*v_x_max;
+                    }else{
+                        move_cmd.linear.x = v_x_max;
+                    }
+                    if (cmd_vel_temp_y > (-1)*v_y_max && cmd_vel_temp_y < v_y_max){
+                            move_cmd.linear.y = cmd_vel_temp_y;
+                    }else if(cmd_vel_temp_y < (-1)*v_y_max){
+                        move_cmd.linear.y = (-1)*v_y_max;
+                    }else{
+                        move_cmd.linear.y = v_y_max;
+                    }
+                
+                
+//                 move_cmd.linear.x = v_x_t + cmd_vel_rate_x * (t_run - t_last).toSec();
+//                 move_cmd.linear.y = v_y_t + cmd_vel_rate_y * (t_run - t_last).toSec();
                 
                 ROS_INFO_STREAM("v_x_t = "<< v_x_t << "\tmove_cmd.linear.x = "<< move_cmd.linear.x);
                 ROS_INFO_STREAM("v_y_t = "<< v_y_t << "\tmove_cmd.linear.y = "<< move_cmd.linear.y);
