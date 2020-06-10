@@ -128,7 +128,13 @@ include_directories(
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/multi_agent_control.cpp
 # )
+# add_library(${PROJECT_NAME}
+#   src/${PROJECT_NAME}/agent_control.cpp
+# )
 
+add_library(AgentControllib
+  		src/agent_control.cpp
+)
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
@@ -151,6 +157,12 @@ target_link_libraries(single_agent_follow_line_static_ob_node ${catkin_LIBRARIES
 
 add_executable(single_agent_v2_node src/single_agent_v2.cpp)
 target_link_libraries(single_agent_v2_node ${catkin_LIBRARIES})
+
+# add_executable(agent_control_v2_node src/agent_control_v2.cpp)
+# target_link_libraries(agent_control_v2_node ${catkin_LIBRARIES})
+
+add_executable(agent_control_node src/agent_control_v2.cpp)
+target_link_libraries(agent_control_node AgentControllib ${catkin_LIBRARIES})
 # )
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

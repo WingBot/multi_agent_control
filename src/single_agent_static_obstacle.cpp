@@ -53,8 +53,9 @@ int main(int argc, char **argv)
     ros::Publisher delta_dis_pub=n.advertise<geometry_msgs::PoseStamped>("/delta_dis",1000);
     
 //     ros::Subscriber odom_sub = n.subscribe<nav_msgs::Odometry> ("/odom", 5, OdomCallback);
-    int parameter;
-    bool ifget1 = ros::param::get("param1", parameter);
+    std::string odom_frame_, base_frame_;
+    bool ifget1 = ros::param::get("odom_frame_", odom_frame_);
+    bool ifget2 = ros::param::get("base_frame_", base_frame_);
     int rate=20;//定义更新频率
     bool tf_error = false;
     ros::Rate loop_rate(rate);//更新频率20Hz，它会追踪记录自上一次调用Rate::sleep()后时间的流逝，并休眠直到一个频率周期的时间
@@ -91,8 +92,8 @@ int main(int argc, char **argv)
     delta_dis.pose.position.x = delta_dis.pose.position.y = delta_dis.pose.position.z = 0.0;
     tf::StampedTransform transform;
     try{
-            listener.waitForTransform("odom", "base_footprint", ros::Time(0), ros::Duration(5.0));
-            listener.lookupTransform("odom", "base_footprint",  ros::Time(0), transform);
+            listener.waitForTransform(odom_frame_, base_frame_, ros::Time(0), ros::Duration(5.0));
+            listener.lookupTransform(odom_frame_, base_frame_,  ros::Time(0), transform);
         }
     catch (tf::TransformException &ex) 
         {
@@ -124,8 +125,8 @@ int main(int argc, char **argv)
     
     //double angle_start = acos(transform.getRotation().z())*2;
     double angle_start = 0.0;
-    double distance = 0.0;
-    double angle = 0.0;
+//     double distance = 0.0;
+//     double angle = 0.0;
 
     double B_x = 0.0;
     double B_y = 0.0;
@@ -145,16 +146,16 @@ int main(int argc, char **argv)
     ros::Time t_last;
     
 //     cout<<"angle_start: "<<angle_start<<endl;
-    ROS_INFO_STREAM_ONCE("x_start = "<< transform.getOrigin().x());
-    ROS_INFO_STREAM_ONCE("y_start = "<< transform.getOrigin().x());
-    ROS_INFO_STREAM_ONCE("angle_start = "<< transform.getOrigin().x());
+    ROS_INFO_STREAM_ONCE("x_start = "<< x_start);
+    ROS_INFO_STREAM_ONCE("y_start = "<< y_start);
+    ROS_INFO_STREAM_ONCE("angle_start = "<< angle_start);
     while(ros::ok())//等待键盘ctrl+C操作则停止
     {
         tf::StampedTransform transform_;
         try
             {
-                listener.waitForTransform("odom", "base_footprint", ros::Time(0), ros::Duration(5.0));
-                listener.lookupTransform("odom", "base_footprint", ros::Time(0), transform_);
+                listener.waitForTransform(odom_frame_, base_frame_, ros::Time(0), ros::Duration(5.0));
+                listener.lookupTransform(odom_frame_, base_frame_, ros::Time(0), transform_);
             }
         catch (tf::TransformException &ex) 
             {
@@ -305,7 +306,7 @@ int main(int argc, char **argv)
                 delta_dis.pose.position.x = delta_dis_x;
                 delta_dis.pose.position.y = delta_dis_y;
                 delta_dis.pose.position.z = delta_obstacle;
-                delta_dis.header.frame_id = "base_footprint";
+                delta_dis.header.frame_id = base_frame_;
                 delta_dis.header.stamp = ros::Time::now();
                 delta_dis.pose.orientation.w = lambda_x;
                 delta_dis.pose.orientation.x = delta_x;
@@ -322,7 +323,7 @@ int main(int argc, char **argv)
                 delta_dis.pose.position.x = delta_dis_x;
                 delta_dis.pose.position.y = delta_dis_y;
                 delta_dis.pose.position.z = delta_obstacle;
-                delta_dis.header.frame_id = "base_footprint";
+                delta_dis.header.frame_id = base_frame_;
                 delta_dis.header.stamp = ros::Time::now();
                 delta_dis.pose.orientation.w = lambda_x;
                 delta_dis.pose.orientation.x = delta_x;

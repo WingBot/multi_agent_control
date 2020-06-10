@@ -3,33 +3,28 @@
     <param name="use_sim_time" value="false"/>
 
     <!-- 设置当前机器人命名空间 -->
-    <arg name="namespace1" default="robot1"/>
+<!--    <arg name="namespace1" default="robot1"/>
 
-    <node ns="$(arg namespace1)" name="single_agent_static_obstacle_node" pkg="multi_agent_control" type="single_agent_static_obstacle_node" output="screen" respawn="true">
-        <remap from="odom" to="/odom"/>
-        <remap from="cmd_vel" to="/cmd_vel"/>
-        <param name="odom_frame"  value="$(arg namespace1)_odom"/>
-        <param name="base_footprint_frame"  value="$(arg namespace1)_base_footprint"/>
+    <node ns="$(arg namespace1)" name="agent_control_node" pkg="multi_agent_control" type="agent_control_node" output="screen" respawn="true">-->
 
-    </node>
+<!--         <remap from="odom" to="/$(arg namespace1)/odom"/> -->
+<!--         <remap from="cmd_vel" to="/robot1/cmd_vel"/> -->
+
+<!--    <remap from="cmd_vel" to="cmd_vel"/>
+        <param name="odom_frame_"  value="$(arg namespace1)_odom"/>
+        <param name="base_frame_"  value="$(arg namespace1)_base_footprint"/>
+
+    </node>-->
     
     
-    <arg name="namespace2" default="robot2"/>
-
-    <node ns="$(arg namespace2)" name="single_agent_static_obstacle_node" pkg="multi_agent_control" type="single_agent_static_obstacle_node" output="screen" respawn="true">
-       	<remap from="odom" to="/odom"/>
-        <remap from="cmd_vel" to="/cmd_vel"/>
-        <param name="odom_frame"  value="$(arg namespace2)_odom"/>
-        <param name="base_footprint_frame"  value="$(arg namespace2)_base_footprint"/>
-    </node>
-
-    
+   
     <arg name="namespace4" default="robot4"/>
 
-    <node ns="$(arg namespace4)" name="single_agent_static_obstacle_node" pkg="multi_agent_control" type="single_agent_static_obstacle_node" output="screen" respawn="true">
-       	<remap from="odom" to="/odom"/>
-        <remap from="cmd_vel" to="/cmd_vel"/>
+    <node ns="$(arg namespace4)" name="agent_control_node" pkg="multi_agent_control" type="agent_control_node" output="screen" respawn="true">
+<!--        	<remap from="odom" to="/$(arg namespace4)/odom"/> -->
+<!--         <remap from="cmd_vel" to="/robot4/cmd_vel"/> -->
+        <remap from="cmd_vel" to="cmd_vel"/>
         <param name="odom_frame"  value="$(arg namespace4)_odom"/>
-        <param name="base_footprint_frame"  value="$(arg namespace4)_base_footprint"/>
+        <param name="base_frame"  value="$(arg namespace4)_base_footprint"/>
     </node>
 </launch>
