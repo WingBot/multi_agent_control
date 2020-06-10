@@ -52,7 +52,7 @@ int main(int argc, char **argv)
     ros::Publisher cmd_vel_pub=n.advertise<geometry_msgs::Twist>("/cmd_vel",1000);//将在/cmd_vel话题上发布一个geometry_msgs::Twist消息
     ros::Publisher delta_dis_pub=n.advertise<geometry_msgs::PoseStamped>("/delta_dis",1000);
     
-    ros::Subscriber odom_sub = n.subscribe<nav_msgs::Odometry> ("/odom", 5, OdomCallback);
+//     ros::Subscriber odom_sub = n.subscribe<nav_msgs::Odometry> ("/odom", 5, OdomCallback);
     int parameter;
     bool ifget1 = ros::param::get("param1", parameter);
     int rate=20;//定义更新频率
@@ -91,8 +91,8 @@ int main(int argc, char **argv)
     delta_dis.pose.position.x = delta_dis.pose.position.y = delta_dis.pose.position.z = 0.0;
     tf::StampedTransform transform;
     try{
-            listener.waitForTransform("odom", "base_footprint", ros::Time::now(), ros::Duration(5.0));
-            listener.lookupTransform("odom", "base_footprint",  ros::Time::now(), transform);
+            listener.waitForTransform("odom", "base_footprint", ros::Time(0), ros::Duration(5.0));
+            listener.lookupTransform("odom", "base_footprint",  ros::Time(0), transform);
         }
     catch (tf::TransformException &ex) 
         {
@@ -153,8 +153,8 @@ int main(int argc, char **argv)
         tf::StampedTransform transform_;
         try
             {
-                listener.waitForTransform("odom", "base_footprint", ros::Time::now(), ros::Duration(5.0));
-                listener.lookupTransform("odom", "base_footprint", ros::Time::now(), transform_);
+                listener.waitForTransform("odom", "base_footprint", ros::Time(0), ros::Duration(5.0));
+                listener.lookupTransform("odom", "base_footprint", ros::Time(0), transform_);
             }
         catch (tf::TransformException &ex) 
             {
