@@ -2,29 +2,116 @@
 <launch>
     <param name="use_sim_time" value="false"/>
 
-    <!-- 设置当前机器人命名空间 -->
-<!--    <arg name="namespace1" default="robot1"/>
 
-    <node ns="$(arg namespace1)" name="agent_control_node" pkg="multi_agent_control" type="agent_control_node" output="screen" respawn="true">-->
+        <arg name="namespace1" default="robot4"/>
+        <arg name="namespace2" default="robot2"/>
+        <arg name="namespace3" default="robot3"/>
+        <arg name="namespace4" default="robot1"/>
+        <arg name="dis_safe" default="0.2"/>
+        <arg name="vel_limit_x" default="0.4"/>
+        <arg name="vel_limit_y" default="0.4"/>
 
-<!--         <remap from="odom" to="/$(arg namespace1)/odom"/> -->
-<!--         <remap from="cmd_vel" to="/robot1/cmd_vel"/> -->
+<!--     <node ns="$(arg namespace1)" name="agent_control_node" pkg="multi_agent_control" type="agent_control_node" output="screen" respawn="true"> -->
 
-<!--    <remap from="cmd_vel" to="cmd_vel"/>
-        <param name="odom_frame_"  value="$(arg namespace1)_odom"/>
-        <param name="base_frame_"  value="$(arg namespace1)_base_footprint"/>
 
-    </node>-->
-    
-    
+<!--        	<remap from="odom" to="/$(arg namespace4)/odom"/> -->
+<!--         <remap from="cmd_vel" to="/robot4/cmd_vel"/> -->
+
+
+<!--        <remap from="cmd_vel" to="cmd_vel"/>
+        
+        <param name="dis_goal"  value="2.0"/>
+        <param name="dis_safe"  value="$(arg dis_safe)"/>-->
+        
+<!--         <param name="tolerance_angle"  value="0.5*M_PI/180"/> -->
+
+<!--        <param name="tolerance_dis"  value="0.01"/>
+        <param name="vel_desired_x"  value="0.1"/>
+        <param name="vel_desired_y"  value="0.0"/>
+        <param name="vel_limit_x"  value="$(arg vel_limit_x)"/>
+        <param name="vel_limit_y"  value="$(arg vel_limit_y)"/>
+        
+        <param name="B_k"  value="-2.0"/>
+        <param name="Bright_k"  value="-50.0"/>
+        <param name="lambda"  value="0.0"/>
+        <param name="epsilon"  value="0.1"/>
+        <param name="epsilon_k"  value="2.0"/>
+        <param name="obstacle_x"  value="1.0"/>
+        <param name="obstacle_y"  value="0.1"/>
+        <param name="vel_pid_k_x"  value="2.0"/>
+        <param name="vel_pid_k_y"  value="2.0"/>
+        <param name="control_rate"  value="20.0"/>
+        
+        
+        <param name="odom_frame"  value="$(arg namespace1)_odom"/>
+        <param name="base_frame"  value="$(arg namespace1)_base_footprint"/>
+    </node>
+    -->
    
-    <arg name="namespace4" default="robot4"/>
+    <node ns="$(arg namespace3)" name="agent_control_node" pkg="multi_agent_control" type="agent_control_node" output="screen" respawn="true">
+<!--        	<remap from="odom" to="/$(arg namespace4)/odom"/> -->
+<!--         <remap from="cmd_vel" to="/robot4/cmd_vel"/> -->
+        <remap from="cmd_vel" to="cmd_vel"/>
+        <remap from="rnn_output" to="rnn_output"/>
+        
+        <param name="dis_goal"  value="2.5"/>
+        <param name="dis_safe"  value="0.2"/>
+<!--         <param name="tolerance_angle"  value="0.5*M_PI/180"/> -->
+        <param name="tolerance_dis"  value="0.01"/>
+        <param name="vel_desired_x"  value="0.2"/>
+        <param name="vel_desired_y"  value="0.0"/>
+        <param name="vel_limit_x"  value="$(arg vel_limit_x)"/>
+        <param name="vel_limit_y"  value="$(arg vel_limit_y)"/>
+        
+        <param name="B_k"  value="-2.0"/>
+        <param name="Bright_k"  value="-50.0"/>
+        <param name="lambda"  value="0.0"/>
+        <param name="epsilon"  value="0.1"/>
+        <param name="epsilon_k"  value="3.0"/>
+        <param name="obstacle_x"  value="1.0"/>
+        <param name="obstacle_y"  value="0.1"/>
+        <param name="vel_pid_k_x"  value="2.0"/>
+        <param name="vel_pid_k_y"  value="2.0"/>
+        <param name="control_rate"  value="20.0"/>
+        
+        <param name="odom_frame"  value="$(arg namespace3)_odom"/>
+        <param name="base_frame"  value="$(arg namespace3)_base_footprint"/>
+    </node>
+    
 
     <node ns="$(arg namespace4)" name="agent_control_node" pkg="multi_agent_control" type="agent_control_node" output="screen" respawn="true">
 <!--        	<remap from="odom" to="/$(arg namespace4)/odom"/> -->
 <!--         <remap from="cmd_vel" to="/robot4/cmd_vel"/> -->
         <remap from="cmd_vel" to="cmd_vel"/>
+        <remap from="rnn_output" to="rnn_output"/>
+        
+        <param name="dis_goal"  value="2.5"/>
+        <param name="dis_safe"  value="0.2"/>
+<!--         <param name="tolerance_angle"  value="0.5*M_PI/180"/> -->
+        <param name="tolerance_dis"  value="0.01"/>
+        <param name="vel_desired_x"  value="0.2"/>
+        <param name="vel_desired_y"  value="0.0"/>
+        <param name="vel_limit_x"  value="$(arg vel_limit_x)"/>
+        <param name="vel_limit_y"  value="$(arg vel_limit_y)"/>
+        
+        <param name="B_k"  value="-2.0"/>
+        <param name="Bright_k"  value="-50.0"/>
+        <param name="lambda"  value="0.0"/>
+        <param name="epsilon"  value="0.1"/>
+        <param name="epsilon_k"  value="3.0"/>
+        <param name="obstacle_x"  value="1.0"/>
+        <param name="obstacle_y"  value="0.1"/>
+        <param name="vel_pid_k_x"  value="2.0"/>
+        <param name="vel_pid_k_y"  value="2.0"/>
+        <param name="control_rate"  value="20.0"/>
+        
         <param name="odom_frame"  value="$(arg namespace4)_odom"/>
         <param name="base_frame"  value="$(arg namespace4)_base_footprint"/>
     </node>
+    
+       <node ns="$(arg namespace1)"  pkg="tf" type="static_transform_publisher" name="odom_to_world" args="0 0 0 0 0 0 $(arg namespace1)_odom map 100"/>
+<!--        <node ns="$(arg namespace2)"  pkg="tf" type="static_transform_publisher" name="odom_to_world" args="0 0 0 0 0 0 $(arg namespace2)_odom map 100"/> -->
+       <node ns="$(arg namespace3)"  pkg="tf" type="static_transform_publisher" name="odom_to_world" args="0 2.0 0 0 0 0 $(arg namespace3)_odom map 100"/>
+       <node ns="$(arg namespace4)"  pkg="tf" type="static_transform_publisher" name="odom_to_world" args="0 -2.0 0 0 0 0  $(arg namespace4)_odom map 100"/>
+    
 </launch>

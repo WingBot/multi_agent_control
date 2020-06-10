@@ -30,12 +30,11 @@ struct double_xy
 
 struct RNN_param
 {
-    double_xy B_;
-    double Bright;
     float B_k;
     float Bright_k;
     float lambda;
     float epsilon;
+    float epsilon_k;
     double_xyz vel_pid_k_;
     double_xy obstacle_;
     int control_rate;
@@ -74,42 +73,63 @@ class Multibot
         
         nav_msgs::Odometry odom_resv_;
         geometry_msgs::Twist move_cmd_;
+        geometry_msgs::PoseStamped delta_dis_;
 //         double v_x_t;
 //         double v_y_t;
         geometry_msgs::Twist vel_t_;
         
         ros::Subscriber odom_sub_;
         ros::Publisher cmd_pub_;
+        ros::Publisher delta_dis_pub_;
                 
         std::string odom_frame_;
         std::string base_frame_;
 
         tf::TransformListener listener_;
         tf::StampedTransform transform_;
-//         bool tf_error_;
+        bool tf_error_;
         
         ros::Time t_run_;
         ros::Time t_last_;
-        ros::Time t_start;
+        ros::Time t_start_;
         
 
         
 
         //agent param
-        struct agent_param agv_;
-//         double dis_goal;
-//         double dis_safe;
-//         double tolerance_angle;
-//         double tolerance_dis;
+//         struct agent_param agv_;
+        double tolerance_angle;
+        double tolerance_dis;
+        struct double_xyz vel_feedback_;
+        struct double_xyz vel_desired_;
+        struct double_xyz vel_limit_;
+        double dis_safe;
+        double dis_goal;
+        double dis_delta_goal;
+        double dis_delta_obstacle;
+        struct double_xyz pos_start_;
+        struct double_xy pos_feedback_;
+        struct double_xy pos_goal_;
+        struct double_xy pos_desired_;
+        struct double_xy pos_obstacle_;
         
-        //rnn param
-        struct RNN_param rnn_;
+        
+
+//         struct RNN_param rnn_;
 //         float B_k;
 //         float Bright_k;
 //         float lambda;
 //         float epsilon;
 //         double v_x_t;
-        double_xy obstacle_; 
+        float B_k;
+        float Bright_k;
+        float lambda;
+        float epsilon;
+        float epsilon_k;
+        struct double_xyz vel_pid_k_;
+        struct double_xy obstacle_;
+        int control_rate;
+//         struct double_xy obstacle_; 
         
 };
 
